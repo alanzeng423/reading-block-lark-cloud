@@ -1,0 +1,5 @@
+# Local-only Worker secrets for `npx wrangler dev`.
+# Do not commit the real .dev.vars file.
+LARK_APP_SECRET=replace-with-your-lark-app-secret
+SESSION_SECRET=replace-with-a-long-random-string
+TOKEN_ENCRYPTION_KEY=replace-with-32-random-bytes-base64

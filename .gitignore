@@ -1,0 +1,12 @@
+node_modules/
+.wrangler/
+dist/
+
+.env
+.dev.vars
+wrangler.jsonc
+extension/manifest.json
+extension/src/lib/config.js
+
+*.log
+.DS_Store

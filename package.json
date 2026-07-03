@@ -1,0 +1,21 @@
+{
+  "name": "reading-block-lark-cloud",
+  "version": "0.1.0",
+  "description": "Self-hosted Chrome extension plus Cloudflare Worker for saving reading links to Lark Base and scheduling Lark Calendar blocks.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "configure": "node scripts/configure.mjs",
+    "test": "node --test",
+    "package:extension": "node scripts/package-extension.mjs",
+    "secret:key": "node scripts/generate-key.mjs",
+    "worker:dev": "npx wrangler dev",
+    "worker:deploy": "npx wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

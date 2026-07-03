@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "__WORKER_NAME__",
+  "main": "worker/src/index.js",
+  "compatibility_date": "2026-07-03",
+  "workers_dev": true,
+  "vars": {
+    "APP_ENV": "production",
+    "PUBLIC_BASE_URL": "__PUBLIC_BASE_URL__",
+    "LARK_APP_ID": "__LARK_APP_ID__",
+    "LARK_OAUTH_SCOPES": "offline_access base:app:create base:table:create base:record:create base:record:update base:record:retrieve calendar:calendar:readonly calendar:calendar.free_busy:read calendar:calendar.event:create",
+    "DEFAULT_TIME_ZONE": "__DEFAULT_TIME_ZONE__"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "__D1_DATABASE_NAME__",
+      "database_id": "__D1_DATABASE_ID__",
+      "migrations_dir": "worker/migrations"
+    }
+  ]
+
+  // Optional R2 download binding. The configure script adds this automatically
+  // when R2_BUCKET_NAME is present in .env.
+  // ,
+  // "r2_buckets": [
+  //   {
+  //     "binding": "DOWNLOADS",
+  //     "bucket_name": "your-r2-bucket"
+  //   }
+  // ]
+}
