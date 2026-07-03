@@ -1,10 +1,10 @@
 # Self-Hosting Guide
 
-This guide assumes you want your own Worker, your own Lark app, and your own Chrome extension build.
+This guide assumes you want your own Worker, your own Lark or Feishu app, and your own Chrome extension build.
 
-## 1. Create A Lark App
+## 1. Create A Lark Or Feishu App
 
-Use the overseas Lark developer console, not the domestic Feishu console.
+Both overseas Lark and domestic Feishu can work. This guide uses overseas Lark as the example; for Feishu, create the app in the Feishu developer console and set the matching OpenAPI/OAuth hosts in `.env` if they differ.
 
 See [docs/LARK_SETUP.md](docs/LARK_SETUP.md).
 

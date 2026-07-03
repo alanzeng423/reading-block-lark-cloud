@@ -10,6 +10,11 @@
     "LARK_APP_ID": "__LARK_APP_ID__",
     "LARK_OAUTH_SCOPES": "offline_access base:app:create base:table:create base:record:create base:record:update base:record:retrieve calendar:calendar:readonly calendar:calendar.free_busy:read calendar:calendar.event:create",
     "DEFAULT_TIME_ZONE": "__DEFAULT_TIME_ZONE__"
+    // Optional: override these if you deploy against another compatible
+    // region, such as domestic Feishu.
+    // ,
+    // "LARK_OPEN_API_BASE": "https://your-open-api-host/open-apis",
+    // "LARK_AUTH_URL": "https://your-account-host/open-apis/authen/v1/authorize"
   },
   "d1_databases": [
     {

@@ -1,18 +1,18 @@
 # Reading Block for Lark
 
-这是一个自托管的 Chrome 插件 + Cloudflare Worker 项目：在浏览器里一键收藏网页，自动写入 Lark 多维表格，并在 Lark 日历里自动创建 Reading Block。
+这是一个自托管的 Chrome 插件 + Cloudflare Worker 项目：在浏览器里一键收藏网页，自动写入 Lark/飞书多维表格，并在 Lark/飞书日历里自动创建 Reading Block。
 
 English: [README.md](README.md)
 
 ## 功能
 
 - Chrome 工具栏一键保存当前页面。
-- 每个登录用户自动创建自己的 Lark Base。
-- 保存数量达到阈值后，Worker 会查找空闲时间并创建 Lark 日历事件。
-- 使用 Lark OAuth 登录，Token 加密后存到 Cloudflare D1。
+- 每个登录用户自动创建自己的 Lark/飞书 Base。
+- 保存数量达到阈值后，Worker 会查找空闲时间并创建 Lark/飞书日历事件。
+- 使用 Lark 或飞书 OAuth 登录，Token 加密后存到 Cloudflare D1。
 - 支持打包为本地可安装的 Chrome extension zip。
 
-这不是 Lark 官方产品。
+这不是 Lark 或飞书官方产品。
 
 ## 架构
 
@@ -20,9 +20,9 @@ English: [README.md](README.md)
 flowchart LR
   Chrome["Chrome 插件"] --> Worker["Cloudflare Worker"]
   Worker --> D1["Cloudflare D1"]
-  Worker --> OAuth["Lark OAuth"]
-  Worker --> Base["Lark Base"]
-  Worker --> Calendar["Lark 日历"]
+  Worker --> OAuth["Lark/飞书 OAuth"]
+  Worker --> Base["Lark/飞书 Base"]
+  Worker --> Calendar["Lark/飞书日历"]
 ```
 
 ## 快速入口
@@ -36,7 +36,7 @@ npm test
 npm run package:extension
 ```
 
-正式使用前还需要创建 Lark 应用、创建 Cloudflare D1、配置 Worker secrets、执行 D1 migrations，并部署 Worker。
+正式使用前还需要创建 Lark 或飞书应用、创建 Cloudflare D1、配置 Worker secrets、执行 D1 migrations，并部署 Worker。
 
 ## 目录
 

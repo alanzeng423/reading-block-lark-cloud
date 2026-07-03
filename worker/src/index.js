@@ -1,7 +1,7 @@
 import { findNextFreeSlotInTimeZone, zonedDateKey } from "../../extension/src/lib/slots.js";
 
-const LARK_OPEN_API = "https://open.larksuite.com/open-apis";
-const LARK_AUTH_URL = "https://accounts.larksuite.com/open-apis/authen/v1/authorize";
+const DEFAULT_LARK_OPEN_API_BASE = "https://open.larksuite.com/open-apis";
+const DEFAULT_LARK_AUTH_URL = "https://accounts.larksuite.com/open-apis/authen/v1/authorize";
 const CALLBACK_PATH = "/auth/lark/callback";
 const EXTENSION_ZIP_KEY = "reading-block-lark-extension.zip";
 const EXTENSION_ZIP_PATH = `/downloads/${EXTENSION_ZIP_KEY}`;
@@ -108,7 +108,7 @@ async function startLarkAuth(request, env) {
     .bind(state, loginId, codeVerifier, now, now + 10 * 60 * 1000)
     .run();
 
-  const authUrl = new URL(LARK_AUTH_URL);
+  const authUrl = new URL(env.LARK_AUTH_URL || DEFAULT_LARK_AUTH_URL);
   authUrl.searchParams.set("client_id", env.LARK_APP_ID);
   authUrl.searchParams.set("redirect_uri", redirectUri);
   authUrl.searchParams.set("scope", scopes);
@@ -141,7 +141,7 @@ async function handleLarkCallback(request, env, ctx) {
 
   try {
     const token = await exchangeCode(env, code, row.code_verifier);
-    const userInfo = await larkJson("/authen/v1/user_info", {
+    const userInfo = await larkJson(env, "/authen/v1/user_info", {
       method: "GET",
       token: token.access_token,
     });
@@ -379,7 +379,7 @@ async function maybeSchedule(env, userId) {
     const timeMax = new Date(now);
     timeMax.setDate(timeMax.getDate() + settings.lookaheadDays + 1);
     const calendarId = await ensureCalendarId(env, token, user);
-    const busy = await getFreeBusy(token, user.lark_open_id, now.toISOString(), timeMax.toISOString());
+    const busy = await getFreeBusy(env, token, user.lark_open_id, now.toISOString(), timeMax.toISOString());
     const timeZone = env.DEFAULT_TIME_ZONE || "Asia/Shanghai";
     const blockedDays = await getBlockedDays(env, user.id, now.getTime(), timeMax.getTime(), timeZone);
     const slot = findNextFreeSlotInTimeZone(busy, settings, now, blockedDays, timeZone);
@@ -433,7 +433,7 @@ async function ensureUserBase(env, userId) {
   if (user.base_app_token && user.base_table_id) return user;
 
   const token = await getValidAccessToken(env, user);
-  const base = await larkJson("/bitable/v1/apps", {
+  const base = await larkJson(env, "/bitable/v1/apps", {
     method: "POST",
     token,
     body: {
@@ -444,7 +444,7 @@ async function ensureUserBase(env, userId) {
   const app = base.data?.app;
   if (!app?.app_token) throw new Error("Lark created a Base but returned no app_token.");
 
-  const table = await larkJson(`/bitable/v1/apps/${encodeURIComponent(app.app_token)}/tables`, {
+  const table = await larkJson(env, `/bitable/v1/apps/${encodeURIComponent(app.app_token)}/tables`, {
     method: "POST",
     token,
     body: {
@@ -469,7 +469,7 @@ async function ensureUserBase(env, userId) {
 
 async function ensureCalendarId(env, token, user) {
   if (user.calendar_id) return user.calendar_id;
-  const res = await larkJson("/calendar/v4/calendars/primary", { method: "POST", token });
+  const res = await larkJson(env, "/calendar/v4/calendars/primary", { method: "POST", token });
   const entry = res.data?.calendars?.find((it) => it.calendar?.type === "primary") || res.data?.calendars?.[0];
   const calendarId = entry?.calendar?.calendar_id;
   if (!calendarId) throw new Error("Could not resolve your primary Lark calendar.");
@@ -479,7 +479,7 @@ async function ensureCalendarId(env, token, user) {
   return calendarId;
 }
 
-async function createBaseRecord(_env, token, user, item) {
+async function createBaseRecord(env, token, user, item) {
   const fields = {
     [BASE_FIELDS.title]: item.title,
     [BASE_FIELDS.url]: { text: item.title, link: item.url },
@@ -489,6 +489,7 @@ async function createBaseRecord(_env, token, user, item) {
     [BASE_FIELDS.source]: item.source,
   };
   const res = await larkJson(
+    env,
     `/bitable/v1/apps/${encodeURIComponent(user.base_app_token)}/tables/${encodeURIComponent(
       user.base_table_id
     )}/records`,
@@ -502,8 +503,9 @@ async function createBaseRecord(_env, token, user, item) {
   return res.data?.record || {};
 }
 
-async function updateBaseRecord(_env, token, user, recordId, fields) {
+async function updateBaseRecord(env, token, user, recordId, fields) {
   return larkJson(
+    env,
     `/bitable/v1/apps/${encodeURIComponent(user.base_app_token)}/tables/${encodeURIComponent(
       user.base_table_id
     )}/records/${encodeURIComponent(recordId)}`,
@@ -516,8 +518,8 @@ async function updateBaseRecord(_env, token, user, recordId, fields) {
   );
 }
 
-async function getFreeBusy(token, openId, start, end) {
-  const res = await larkJson("/calendar/v4/freebusy/list", {
+async function getFreeBusy(env, token, openId, start, end) {
+  const res = await larkJson(env, "/calendar/v4/freebusy/list", {
     method: "POST",
     token,
     query: { user_id_type: "open_id" },
@@ -536,7 +538,7 @@ async function getFreeBusy(token, openId, start, end) {
 }
 
 async function createCalendarEvent(env, token, calendarId, settings, batch, slot) {
-  const res = await larkJson(`/calendar/v4/calendars/${encodeURIComponent(calendarId)}/events`, {
+  const res = await larkJson(env, `/calendar/v4/calendars/${encodeURIComponent(calendarId)}/events`, {
     method: "POST",
     token,
     query: { idempotency_key: randomId() },
@@ -572,7 +574,7 @@ async function getBlockedDays(env, userId, startMs, endMs, timeZone) {
 
 async function exchangeCode(env, code, codeVerifier) {
   const redirectUri = `${env.PUBLIC_BASE_URL}${CALLBACK_PATH}`;
-  const res = await fetch(`${LARK_OPEN_API}/authen/v2/oauth/token`, {
+  const res = await fetch(`${larkOpenApiBase(env)}/authen/v2/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8" },
     body: JSON.stringify({
@@ -588,7 +590,7 @@ async function exchangeCode(env, code, codeVerifier) {
 }
 
 async function refreshAccessToken(env, refreshToken) {
-  const res = await fetch(`${LARK_OPEN_API}/authen/v2/oauth/token`, {
+  const res = await fetch(`${larkOpenApiBase(env)}/authen/v2/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8" },
     body: JSON.stringify({
@@ -705,8 +707,8 @@ async function updateUserTokens(env, userId, token) {
     .run();
 }
 
-async function larkJson(path, { method, token, query, body }) {
-  const url = new URL(`${LARK_OPEN_API}${path}`);
+async function larkJson(env, path, { method, token, query, body }) {
+  const url = new URL(`${larkOpenApiBase(env)}${path}`);
   for (const [key, value] of Object.entries(query || {})) url.searchParams.set(key, String(value));
   const res = await fetch(url.toString(), {
     method,
@@ -722,6 +724,10 @@ async function larkJson(path, { method, token, query, body }) {
     throw new Error(msg);
   }
   return data;
+}
+
+function larkOpenApiBase(env) {
+  return String(env.LARK_OPEN_API_BASE || DEFAULT_LARK_OPEN_API_BASE).replace(/\/+$/, "");
 }
 
 async function requireSession(request, env) {

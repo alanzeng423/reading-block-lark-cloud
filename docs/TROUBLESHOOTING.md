@@ -22,4 +22,4 @@ The Worker schedules only after there are at least `Saves per block` waiting ite
 
 ## Permission Denied From Lark
 
-Re-check OAuth scopes in the Lark developer console, then reconnect the extension.
+Re-check OAuth scopes in the Lark or Feishu developer console, then reconnect the extension.

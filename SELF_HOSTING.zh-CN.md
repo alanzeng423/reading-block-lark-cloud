@@ -1,10 +1,10 @@
 # 自托管部署指南
 
-这个项目的推荐用法是：每个人部署自己的 Cloudflare Worker、自己的 Lark 应用、自己的 Chrome 插件包。
+这个项目的推荐用法是：每个人部署自己的 Cloudflare Worker、自己的 Lark 或飞书应用、自己的 Chrome 插件包。
 
-## 1. 创建 Lark 应用
+## 1. 创建 Lark 或飞书应用
 
-请使用海外 Lark 开放平台，不是国内飞书开放平台。
+国内飞书和海外 Lark 都可以。这里以海外 Lark 为例；如果你用国内飞书，就在飞书开放平台创建应用，并在 `.env` 里按需配置对应的 OpenAPI/OAuth 域名。
 
 详细步骤看：[docs/LARK_SETUP.zh-CN.md](docs/LARK_SETUP.zh-CN.md)。
 

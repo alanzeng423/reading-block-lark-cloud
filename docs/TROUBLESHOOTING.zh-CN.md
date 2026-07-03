@@ -22,4 +22,4 @@ Worker 只有在待读条目数量达到 `Saves per block` 后才会排日程。
 
 ## Lark 返回 Permission denied
 
-重新检查 Lark 开放平台里的 OAuth 权限，然后在插件里重新连接。
+重新检查 Lark 或飞书开放平台里的 OAuth 权限，然后在插件里重新连接。

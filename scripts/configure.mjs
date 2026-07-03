@@ -30,6 +30,8 @@ const wrangler = {
     LARK_APP_ID: larkAppId,
     LARK_OAUTH_SCOPES: env.LARK_OAUTH_SCOPES || defaultScopes,
     DEFAULT_TIME_ZONE: defaultTimeZone,
+    ...(env.LARK_OPEN_API_BASE ? { LARK_OPEN_API_BASE: env.LARK_OPEN_API_BASE } : {}),
+    ...(env.LARK_AUTH_URL ? { LARK_AUTH_URL: env.LARK_AUTH_URL } : {}),
   },
   d1_databases: [
     {
