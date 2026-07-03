@@ -38,6 +38,18 @@ npm run package:extension
 
 You also need to create a Lark or Feishu app, create a Cloudflare D1 database, set Worker secrets, run D1 migrations, and deploy the Worker.
 
+## Agent-Assisted Setup
+
+You can hand this repository to a coding agent. Ask the agent to read [AGENTS.md](AGENTS.md) first; it contains the full setup runbook, human checkpoints, and verification steps.
+
+Copy this prompt:
+
+```text
+Please help me self-host this repository. First read AGENTS.md, then guide me through the full install: Lark/Feishu app setup, Cloudflare Worker/D1 configuration, secret setup, migrations, deployment, extension packaging, Chrome installation, OAuth authorization, and final verification. Pause whenever I need to log in, approve browser authorization, enter secrets, configure developer console settings, bind a domain, or install the extension manually. Do not commit generated config files or secrets.
+```
+
+The agent can automate repo edits, config generation, migrations, deploy commands, tests, and packaging when tools and permissions are available. The human still needs to complete Cloudflare login, Lark/Feishu developer console setup, secret entry, browser OAuth approval, domain binding approval, and Chrome extension installation.
+
 ## Repository Layout
 
 - `extension/`: Chrome extension source.
@@ -45,7 +57,8 @@ You also need to create a Lark or Feishu app, create a Cloudflare D1 database, s
 - `scripts/`: configuration and packaging helpers.
 - `test/`: Node tests for scheduling, CORS, downloads, and Worker flow.
 - `docs/`: focused setup notes.
-- `AGENTS.md`: concise instructions for coding agents.
+- `AGENTS.md`: full setup runbook for coding agents.
+- `AGENT.md`: short entry point that points agents to `AGENTS.md`.
 
 ## Generated Files
 
