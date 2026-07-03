@@ -58,6 +58,10 @@ The following files are intentionally ignored because they contain deployment-sp
 - `.dev.vars`
 - `dist/`
 
+## References
+
+This project was inspired by [zarazhangrui/reading-block-lark](https://github.com/zarazhangrui/reading-block-lark).
+
 ## License
 
 MIT

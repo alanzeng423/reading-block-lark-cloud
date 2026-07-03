@@ -58,6 +58,10 @@ npm run package:extension
 - `.dev.vars`
 - `dist/`
 
+## 参考
+
+本项目参考了 [zarazhangrui/reading-block-lark](https://github.com/zarazhangrui/reading-block-lark) 的想法和实现方向。
+
 ## License
 
 MIT
